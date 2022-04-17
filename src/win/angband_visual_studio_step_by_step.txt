@@ -1,57 +1,78 @@
 To build Angband using Microsoft's Visual Studio.
+Tested with Visual Studio 2019
 
  1. Download the source from the homepage at http://rephial.org or clone the
     git repostitory at https://github.com/angband/angband.
 
- 2. Make an empty win32 project in visual studio.
+ 2. Make an empty win32 project in visual studio. In the project settings, 
+    in the Linker > System tab, ensure that SubSystem line is set to 
+	"Windows (/SUBSYSTEM:WINDOWS)".
 
  3. Extract/copy the source code into the project directory. Make sure that 
     the src directory is in the project directory, rather than in another
     subdirectory.
 
- 4. Copy libpng.dll and zlib1.dll from src\win\dll\ to the project directory.
+ 4. Copy libpng12.dll and zlib1.dll from src\win\dll\ to the project directory.
 
- 5. In the project settings, in the C/C++ tab, in the additional include
-    directories line, add: src, src/win, src/win/include.
-
- 6. In the project settings, in the Link tab, in the Object/library modules
-    line, add: "src\win\zlib1.lib src\win\libpng.lib msimg32.lib winmm.lib "
-    to the front of the line.
-
- 7. In the project settings, also in the Link tab, remove any directory names
-    (usually Debug\ or Release\) from in front of the executable name. Doing
-    this will put the executeable in the project directory so you do not have
-    to move it every time the project is compiled.
-
- 8. Add all of the files that end in ".c" or ".h" in the src directory EXCEPT
+ 5. Add all of the files that end in ".c" or ".h" in the src directory EXCEPT
     those that have "main" in their name and snd-sdl.c to the project files.
     This can be done by right-clicking on the project in visual studio and 
     choosing "Add Files to Project" from the context menu or by going to
     "Project" -> "Add to Project" -> "Files" from the menu bar.
 
- 9. Add all of the files that end in ".c" or ".h" in the src\win directory
+ 6. Add all of the files that end in ".c" or ".h" in the src\win directory
     to the project, as well as angband.rc.
 
-10. Add main-win.c from the src directory to the project.
+ 7. Add main-win.c from the src directory to the project.
 
-11. (optional) To include sound support, open the project's "Property Pages"
-    dialog box.  In the left pane, select "Configuration Properties, C/C++,
-    Preprocessor".  In the right pane of the "Preprocessor Definitions"
-    property, open the drop-down menu and choose "Edit".  In the "Preprocessor
-    Definitions" dialog box, add a line containing "SOUND" (without the quotes;
+ 8. In the project settings, in the C/C++ > General tab, in the Additional Include
+    Directories line, add: "src;src/win;src/win/include".
+
+ 9. In the project settings, in the Linker > Input tab, in the Additional Dependencies
+    line, add: "src\win\lib\zlib.lib;src\win\lib\libpng.lib;msimg32.lib;winmm.lib"
+    to the front of the line.
+
+10. In the project settings, in the General tab, remove $(Configuration) 
+    (usually Debug\ or Release\) from in front of the Output Directory. Doing
+    this will put the executeable in the project directory so you do not have
+    to move it every time the project is compiled.
+
+11. (optional) To include sound support, in the project settings, in the C/C++ > 
+    Preprocessor tab, in the Preprocessor Definitions line open the drop-down menu 
+	and choose "Edit". Add a line containing "SOUND" (without the quotes;
     a semicolon may be necessary after "SOUND" to separate it from the other
     definitions).
 
-12. Save the project, then compile the project. There will be a lot of
+12. (optional) The Windows front end bypasses main.c and can not use the statistics 
+    front end. It is possible to enable the debugging commands related to statistics 
+	(see the descriptions for S, D, and P in Dungeon). To do so, set your compiler options 
+	so that the USE_STATS preprocessor macro is set.
+
+13. Save the project, then compile the project. There will be a lot of
     warnings, but there should not be any errors. The warnings can be ignored.
 
-13. If there are no errors, enjoy playing angband. There should not be any
+14. If there are no errors, enjoy playing angband. There should not be any
     errors and the executable should be built. If there are any errors, and
     you do not know how to fix them, you can ask on the forums at
     http://angband.oook.cz or in the #angband-dev IRC channel on libera.chat.
+	See also below for some FAQ.
 
-14. Report bugs or request changes on https://github.com/angband/angband/issues
-    at the Github site or on the forums at http://angband.oook.cz .
+15. Report bugs or request changes on https://github.com/angband/angband/issues
+    at the Github site or on the forums at http://angband.oook.cz.
 
-15. To submit bug fixes, changes, etc please open pull requests on the Github
+16. To submit bug fixes, changes, etc please open pull requests on the Github
     site.
+
+
+FAQ:
+
+-   Build error: "'***': This function or variable may be unsafe. Consider using *** instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details."
+    Add _CRT_SECURE_NO_WARNINGS to C/C++ > Preprocessor > Preprocessor Definitions line.
+
+-   Error dialog box after successfull build (with strange characters)
+    From C/C++ > Preprocessor > Preprocessor Definitions line remove UNICODE value (or unflag "Inherit from parent or project defaults" if it is an inherited value.
+    See also http://angband.oook.cz/forum/showthread.php?t=8779&page=2.
+
+-   Error dialog box after successfull build (cannot find required directories)
+    Manually create lib/save, lib/panic and lib/scores directories.
+
